@@ -1,3 +1,6 @@
+changelog from the fork
+- in yolo/backend/utils.fit.py 	removed reduce_lr callback - since it causes fault in training in colab
+
 # Forked from SVHN yolo-v2 digit detector
 # This repository is depreciated now. For new version with more features, please go to https://github.com/AIWintermuteAI/aXeleRate
 
