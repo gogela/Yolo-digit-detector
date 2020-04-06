@@ -176,7 +176,7 @@ def _create_callbacks(saved_weights_name, train_date):
     # Make a few callbacks
     early_stop = EarlyStopping(monitor='val_loss', 
                        min_delta=0.001, 
-                       patience=20, 
+                       patience=200, 
                        mode='min', 
                        verbose=1,
                        restore_best_weights=True)
