@@ -203,19 +203,19 @@ def MobileNet(input_shape=None,
                              '`0.25`, `0.50`, `0.75` or `1.0` only.')
 
         if rows != cols or rows not in [128, 160, 192, 224]:
-            if rows is None:
-                rows = 224
+            if rows is None:  #different from original keras implementation
+                rows = 224  #keras sets to 224 always
                 warnings.warn('MobileNet shape is undefined.'
                               ' Weights for input shape '
-                              '(224, 224) will be loaded.')
-            else:
+                              '(224, 224) will be loaded.')  #keras has a different message
+            else:    #different from original keras implementation
                 raise ValueError('If imagenet weights are being loaded, '
                                  'input must have a static square shape '
                                  '(one of (128, 128), (160, 160), '
                                  '(192, 192), or (224, 224)). '
-                                 'Input shape provided = %s' % (input_shape,))
+                                 'Input shape provided = %s' % (input_shape,)) #different from original keras implementation
 
-    if backend.image_data_format() != 'channels_last':
+    if backend.image_data_format() != 'channels_last':    #different from original keras implementation
         warnings.warn('The MobileNet family of models is only available '
                       'for the input data format "channels_last" '
                       '(width, height, channels). '
@@ -224,11 +224,11 @@ def MobileNet(input_shape=None,
                       ' You should set `image_data_format="channels_last"` '
                       'in your Keras config located at ~/.keras/keras.json. '
                       'The model being returned right now will expect inputs '
-                      'to follow the "channels_last" data format.')
-        backend.set_image_data_format('channels_last')
-        old_data_format = 'channels_first'
-    else:
-        old_data_format = None
+                      'to follow the "channels_last" data format.') #different from original keras implementation
+        backend.set_image_data_format('channels_last') #different from original keras implementation
+        old_data_format = 'channels_first'  #different from original keras implementation
+    else:                                  #different from original keras implementation
+        old_data_format = None             #different from original keras implementation
 
     if input_tensor is None:
         img_input = layers.Input(shape=input_shape)
@@ -273,8 +273,8 @@ def MobileNet(input_shape=None,
         x = layers.Conv2D(classes, (1, 1),
                           padding='same',
                           name='conv_preds')(x)
-        x = layers.Activation('softmax', name='act_softmax')(x)
-        x = layers.Reshape((classes,), name='reshape_2')(x)
+        x = layers.Activation('softmax', name='act_softmax')(x)  ##different from original keras implementation (swap with the next line)
+        x = layers.Reshape((classes,), name='reshape_2')(x)   #different from original keras implementation
     else:
         if pooling == 'avg':
             x = layers.GlobalAveragePooling2D()(x)
@@ -293,9 +293,9 @@ def MobileNet(input_shape=None,
 
     # Load weights.
     if weights == 'imagenet':
-        if backend.image_data_format() == 'channels_first':
+        if backend.image_data_format() == 'channels_first':  #different from original keras implementation
             raise ValueError('Weights for "channels_first" format '
-                             'are not available.')
+                             'are not available.')  #different from original keras implementation
         if alpha == 1.0:
             alpha_text = '1_0'
         elif alpha == 0.75:
@@ -321,9 +321,9 @@ def MobileNet(input_shape=None,
     elif weights is not None:
         model.load_weights(weights)
 
-    if old_data_format:
-        backend.set_image_data_format(old_data_format)
-    return model
+    if old_data_format: #different from original keras implementation
+        backend.set_image_data_format(old_data_format) #different from original keras implementation
+    return model #different from original keras implementation
 
 
 def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
@@ -377,7 +377,7 @@ def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
     """
     channel_axis = 1 if backend.image_data_format() == 'channels_first' else -1
     filters = int(filters * alpha)
-    x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name='conv1_pad')(inputs)
+    x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name='conv1_pad')(inputs)  ##different from original keras implementation (0,1)(0,1)
     x = layers.Conv2D(filters, kernel,
                       padding='valid',
                       use_bias=False,
@@ -447,7 +447,7 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
         x = inputs
     else:
         x = layers.ZeroPadding2D(((1, 1), (1, 1)),
-                                 name='conv_pad_%d' % block_id)(inputs)
+                                 name='conv_pad_%d' % block_id)(inputs) #different from original keras implementation (0,1)(0,1)
     x = layers.DepthwiseConv2D((3, 3),
                                padding='same' if strides == (1, 1) else 'valid',
                                depth_multiplier=depth_multiplier,
